@@ -183,15 +183,12 @@ def export_scene_pkg(
     if gaussians_ply and Path(gaussians_ply).is_file():
         shutil.copy2(gaussians_ply, dst_gauss)
         splat_meta = train_meta or {"method": "external", "trained": True}
+        # copy sidecar init/train meta if present
+        side = Path(gaussians_ply).with_suffix(".init.json")
+        if side.is_file():
+            shutil.copy2(side, splat_dir / "gaussians.init.json")
     else:
         splat_meta = init_gaussians_from_poses(ingest_dir, dst_gauss, stride=5, rays_per_frame=24)
-        # also keep init json next to ply
-        init_src = Path(str(dst_gauss) + ".init.json") if False else dst_gauss.with_suffix(".init.json")
-        # init_gaussians writes alongside; move into splat dir if needed
-        if init_src.is_file() and init_src.parent != splat_dir:
-            shutil.move(str(init_src), splat_dir / "gaussians.init.json")
-        elif dst_gauss.with_suffix(".init.json").is_file():
-            pass
 
     (splat_dir / "train_config.yaml").write_text(
         "# or2s-reconstruct splat train config (stub)\n"

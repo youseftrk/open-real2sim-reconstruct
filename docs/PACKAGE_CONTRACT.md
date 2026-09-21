@@ -211,9 +211,12 @@ scene_pkg/
     nerf/                        # optional
       checkpoint.ckpt
       config.yml
-    proxy/                        # required v0: decimated textured mesh and/or point cloud
+    proxy/                        # required v0: MuJoCo mesh proxy and/or point cloud
+      mesh.obj                   # required for MuJoCo stub visuals; open-top room proxy
+      mesh.mtl                   # optional simple colors for mesh.obj
+      points.ply                 # optional/alongside mesh.obj
   collision/
-    room_shell.obj               # meters; physics + wireframe pane
+    room_shell.obj               # meters; open-top floor + 4 walls; physics + wireframe
   materials/
     README.md                    # v0: visuals via splat; collision untextured
   transforms/
@@ -235,7 +238,7 @@ scene_pkg/
 
 ```json
 {
-  "package_version": "0.1.0-draft",
+  "package_version": "0.1.1-draft",
   "scene_id": "string",
   "source_session_id": "uuid-from-capture-manifest",
   "units": "m",
@@ -253,6 +256,7 @@ scene_pkg/
     "primary": "3dgs",
     "splat_path": "visual/splat/gaussians.ply",
     "proxy_path": "visual/proxy/",
+    "proxy_mesh_path": "visual/proxy/mesh.obj",
     "bbox_xyz": [0, 0, 0, 0, 0, 0]
   },
   "collision": {
@@ -285,9 +289,12 @@ scene_pkg/
 - Always ship `visual/splat/gaussians.ply` as the hero for the viewer / future
   renderer; it is gsplat/nerfstudio-compatible. An optional `.splat` sidecar may
   be added later but is not required for v0.
-- Always ship `collision/room_shell.obj` for physics + the wireframe pane.
-- Always ship `visual/proxy/` with a decimated textured mesh and/or point cloud
-  so the stub can show scene content without a Gaussian rasterizer.
+- Always ship `collision/room_shell.obj` for physics + the wireframe pane. The
+  collision shell is an **open-top** room: floor at z=0 plus four walls, with
+  no ceiling, so humanoid agents can enter and move in the room.
+- Always ship `visual/proxy/mesh.obj` (with optional `mesh.mtl`) for MuJoCo
+  stub visuals; `points.ply` may accompany it for point-cloud debug views.
+  The proxy mesh is a coarse open-top floor + walls visual, not the hero asset.
 - Synthetic RGB/depth/points for the **2×2 debug** come from an offline
   Reconstruct splat render (QA) or sim cameras against collision/proxy in the
   stub; wireframe comes from the collision mesh. The same numeric RDF→world 4×4
@@ -299,5 +306,6 @@ scene_pkg/
 ### B.5 Versioning
 
 - Capture `schema` strings are Capture-owned.
-- Scene `package_version` semver; breaking layout bumps until 1.0.
+- Scene `package_version` semver; breaking layout bumps until 1.0. The
+  explicit `visual.proxy_mesh_path` field is introduced in `0.1.1-draft`.
 - Keep `source_session_id` == Capture `session_id`.

@@ -59,8 +59,9 @@ RDF optical, or `T_parent_sensor` parent←sensor / xyzw / meters.
 ## Closed (do not reopen without CTO)
 
 **Sim Runtime freeze (S1–S3):** v0 stubs do not rasterize 3DGS. Always ship the
-Gaussian PLY hero, `collision/room_shell.obj`, and required `visual/proxy/`
-(decimated textured mesh and/or point cloud). Synthetic RGB/depth/points come
+Gaussian PLY hero, an **open-top** `collision/room_shell.obj` (floor at z=0 +
+four walls, no ceiling), and `visual/proxy/mesh.obj` for MuJoCo stub visuals
+(with `points.ply` allowed alongside). Synthetic RGB/depth/points come
 from an offline Reconstruct splat render (QA) or stub sim cameras against the
 collision/proxy.
 

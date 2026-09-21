@@ -88,7 +88,7 @@ def write_gaussian_ply(
         for i in range(n):
             f.write(
                 struct.pack(
-                    "<18f",
+                    "<17f",
                     float(xyz[i, 0]),
                     float(xyz[i, 1]),
                     float(xyz[i, 2]),
