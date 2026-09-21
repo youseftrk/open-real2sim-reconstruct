@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "or2s-reconstruct"
+version = "0.1.0"
+description = "Open Real2Sim reconstruction — ingest Capture bags, train 3DGS/NeRF, export scene packages"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Open Real2Sim" }]
+dependencies = [
+  "mcap>=1.0",
+  "mcap-protobuf-support>=0.5",
+  "foxglove-schemas-protobuf>=0.4",
+  "Pillow>=10.0",
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+# Prefer Capture's reader when available (editable install from sibling repo).
+capture = []
+
+[project.scripts]
+reconstruct = "or2s_reconstruct.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
